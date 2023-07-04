@@ -2,6 +2,29 @@
 
 include __DIR__."/partials/hotelsList.php";
 
+var_dump(isset($_GET['park']));
+
+if (isset($_GET['park'])) {
+    $filteredHotels = [];
+    if ($_GET['park']) {
+        foreach($hotels as $hotel) {
+            if ($hotel['parking']) {
+                $filteredHotels[] = $hotel;
+            }
+        }
+        $hotels = $filteredHotels;
+    } else {
+        foreach($hotels as $hotel) {
+            if (!$hotel['parking']) {
+                $filteredHotels[] = $hotel;
+            }
+        }
+        $hotels = $filteredHotels;
+    }
+} else {
+    include __DIR__."/partials/hotelsList.php";
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +40,26 @@ include __DIR__."/partials/hotelsList.php";
 <body>
     <main>
         <div class="container">
+            <!-- form per il filtraggio degli hotel -->
+            <form class="my-3" action="index.php" method="GET">
+                <label class="form-label">Parcheggio</label>
+                <select class="rounded" name="park">
+                    <option selected></option>
+                    <option value="1">Si</option>
+                    <option value="0">No</option>
+                </select>
+                <label class="form-label">Voto</label>
+                <select class="rounded" name="vote">
+                    <option selected></option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+                <button class="btn btn-success" type="submit">Filtra</button>
+            </form>
+            <!-- tabella -->
             <table class="table">
                 <thead>
                     <tr>
