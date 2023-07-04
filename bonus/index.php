@@ -4,7 +4,8 @@ include __DIR__."/partials/hotelsList.php";
 
 var_dump(isset($_GET['park']));
 
-if (isset($_GET['park'])) {
+// se viene selezione il parcheggio
+if (isset($_GET['park']) && $_GET['park'] !== '') {
     $filteredHotels = [];
     if ($_GET['park']) {
         foreach($hotels as $hotel) {
@@ -21,8 +22,29 @@ if (isset($_GET['park'])) {
         }
         $hotels = $filteredHotels;
     }
-} else {
-    include __DIR__."/partials/hotelsList.php";
+}
+
+// se viene seleziona sia il parcheggio che il voto
+if (isset($_GET['minVote']) && $_GET['park'] !== '') {
+    if (count($filteredHotels) > 0) {
+        foreach ($filteredHotels as $chiave => $valore) {
+            if ($valore['vote'] < $_GET['minVote']) {
+                unset($filteredHotels[$chiave]);
+            };
+        }
+        $hotels = $filteredHotels;
+    }
+}
+
+// se viene selezionato solo il voto
+if (isset($_GET['minVote']) && $_GET['park'] == '') {
+    $filteredHotels = [];
+        foreach ($hotels as $hotel) {
+            if ($hotel['vote'] >= $_GET['minVote']) {
+                $filteredHotels[] = $hotel;
+            };
+        }
+        $hotels = $filteredHotels;
 }
 
 ?>
@@ -44,12 +66,12 @@ if (isset($_GET['park'])) {
             <form class="my-3" action="index.php" method="GET">
                 <label class="form-label">Parcheggio</label>
                 <select class="rounded" name="park">
-                    <option selected></option>
+                    <option value="" selected>Tutti</option>
                     <option value="1">Si</option>
                     <option value="0">No</option>
                 </select>
                 <label class="form-label">Voto</label>
-                <select class="rounded" name="vote">
+                <select class="rounded" name="minVote">
                     <option selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
